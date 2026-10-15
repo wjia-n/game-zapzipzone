@@ -83,6 +83,8 @@ const arcadeConfig = ArcadeConfig(
   fallDown: false,
   tip1Id: 'zapzipzonepancake',
   tip2Id: 'zapzipzonewaffle',
-  tip1Label: '💛 Buy me a pancake',
-  tip2Label: '💛 Buy me a waffle',
+  tip1Label: '💛 Buy me a pancake for Zap Zip Zone',
+
+  tip2Label: '💛 Buy me a waffle for Zap Zip Zone',
+
 );
