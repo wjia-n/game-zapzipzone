@@ -1,3 +1,5 @@
+// DISTINCT ROLLOUT V3 — zapzipzone: "Bottom panel"
+// Layout template from distinct-samples/pingpongpop.
 import 'package:flutter/material.dart';
 import '../theme/arcade_config.dart';
 import '../engine/arcade_engine.dart';
@@ -6,6 +8,8 @@ import '../services/sound_service.dart';
 import 'game_screen.dart';
 import 'settings_screen.dart';
 import 'support_screen.dart';
+
+const List<String> _emojiFb = ['Noto Color Emoji'];
 
 class MenuScreen extends StatefulWidget {
   final ArcadeConfig config;
@@ -52,39 +56,59 @@ class _MenuScreenState extends State<MenuScreen> {
       body: Container(
         decoration: BoxDecoration(gradient: LinearGradient(
           begin: Alignment.topCenter, end: Alignment.bottomCenter,
-          colors: [c.darkColor, c.primaryColor.withOpacity(0.6)])),
-        child: SafeArea(child: Center(child: SingleChildScrollView(
-          padding: const EdgeInsets.all(28),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(c.playerEmoji, style: const TextStyle(fontSize: 80)),
-            const SizedBox(height: 8),
-            Text(c.displayName.toUpperCase(), textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 4),
-            Text(c.tagline, textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white70, fontSize: 14)),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(20)),
-              child: Text('🏆 $playerName — Best: $highScore',
-                  style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+          colors: [c.primaryColor.withOpacity(0.55), c.darkColor])),
+        child: SafeArea(child: Column(children: [
+          Expanded(child: Center(child: SingleChildScrollView(
+            padding: const EdgeInsets.all(28),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(c.playerEmoji,
+                  style: const TextStyle(fontSize: 72, fontFamilyFallback: _emojiFb)),
+              const SizedBox(height: 12),
+              Text(c.displayName.toUpperCase(), textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.w700, letterSpacing: 3.0, fontFamilyFallback: _emojiFb)),
+              const SizedBox(height: 6),
+              Text(c.tagline, textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white70, fontSize: 14, fontFamilyFallback: _emojiFb)),
+              const SizedBox(height: 14),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(20)),
+                child: Text('🏆 $playerName — Best: $highScore',
+                    style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontFamilyFallback: _emojiFb)),
+              ),
+            ])))),
+          Container(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+            decoration: BoxDecoration(
+              color: c.darkColor.withOpacity(0.85),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
             ),
-            const SizedBox(height: 20),
-            _btn(context, '▶  PLAY', c.accentColor, Colors.black, _play),
-            _btn(context, '❓  HOW TO PLAY', Colors.white24, Colors.white,
-                () => _howTo(context, c)),
-            _btn(context, '⚙️  SETTINGS', Colors.white24, Colors.white, () {
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => SettingsScreen(config: c))).then((_) => _load());
-            }),
-            _btn(context, '💛  SUPPORT', Colors.amber.shade700, Colors.black, () {
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => SupportScreen(config: c)));
-            }),
-            const SizedBox(height: 24),
-            const Text('Credits: WAJIHA', style: TextStyle(color: Colors.white38, fontSize: 12)),
-          ])))),
+            child: Column(children: [
+              SizedBox(width: double.infinity, child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: c.accentColor, foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: const StadiumBorder()),
+                onPressed: _play,
+                child: const Text('▶  PLAY', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, fontFamilyFallback: _emojiFb)))),
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(child: _miniBtn('❓  HOW TO PLAY', () => _howTo(context, c))),
+                const SizedBox(width: 8),
+                Expanded(child: _miniBtn('⚙️  SETTINGS', () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => SettingsScreen(config: c))).then((_) => _load());
+                })),
+                const SizedBox(width: 8),
+                Expanded(child: _miniBtn('💛  SUPPORT', () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => SupportScreen(config: c)));
+                })),
+              ]),
+              const SizedBox(height: 16),
+              const Text('Credits: WAJIHA', style: TextStyle(color: Colors.white38, fontSize: 12, fontFamilyFallback: _emojiFb)),
+            ]),
+          ),
+        ])),
       ),
     );
   }
@@ -92,20 +116,19 @@ class _MenuScreenState extends State<MenuScreen> {
   void _howTo(BuildContext ctx, ArcadeConfig c) {
     showDialog(context: ctx, builder: (_) => AlertDialog(
       backgroundColor: c.darkColor,
-      title: Text(c.displayName, style: const TextStyle(color: Colors.white)),
-      content: Text(c.howTo, style: const TextStyle(color: Colors.white70)),
+      title: Text(c.displayName, style: const TextStyle(color: Colors.white, fontFamilyFallback: _emojiFb)),
+      content: Text(c.howTo, style: const TextStyle(color: Colors.white70, fontFamilyFallback: _emojiFb)),
       actions: [TextButton(
         onPressed: () => Navigator.pop(ctx),
-        child: Text('GOT IT', style: TextStyle(color: c.accentColor)))],
+        child: Text('GOT IT', style: TextStyle(color: c.accentColor, fontFamilyFallback: _emojiFb)))],
     ));
   }
 
-  Widget _btn(BuildContext ctx, String label, Color bg, Color fg, VoidCallback onTap) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6),
-    child: SizedBox(width: double.infinity, child: ElevatedButton(
-      style: ElevatedButton.styleFrom(backgroundColor: bg, foregroundColor: fg,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
-      onPressed: onTap, child: Text(label, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)))),
-  );
+  Widget _miniBtn(String label, VoidCallback onTap) => ElevatedButton(
+    style: ElevatedButton.styleFrom(backgroundColor: Colors.white24, foregroundColor: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
+      shape: const StadiumBorder()),
+    onPressed: onTap,
+    child: FittedBox(fit: BoxFit.scaleDown,
+      child: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontFamilyFallback: _emojiFb))));
 }
